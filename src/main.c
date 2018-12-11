@@ -15,15 +15,26 @@
 
 #include <uFCoder.h>
 
+#ifdef _WIN32
+#	include <windows.h>
+#endif
+
 /** Calls ReaderOpenEx() and print status */
 UFR_STATUS reader_open_ex(uint32_t reader_type, c_string port_name,
 		uint32_t port_interface, char *arg)
 {
 	UFR_STATUS status;
+	unsigned long opening_time;
+
+	opening_time = GetTickCount();
 
 	status = ReaderOpenEx(reader_type, port_name, port_interface, arg);
-	printf("ReaderOpenEx(%d, '%s', %d, 0):> %s\n", reader_type, port_name,
-			port_interface, UFR_Status2String(status));
+
+	opening_time = GetTickCount() - opening_time;
+
+	printf("ReaderOpenEx(%d, '%s', %d, \"%s\"):> %s || Time = %lu ms\n",
+			reader_type, port_name, port_interface, arg,
+			UFR_Status2String(status), opening_time);
 
 	if (status)
 		return status;
