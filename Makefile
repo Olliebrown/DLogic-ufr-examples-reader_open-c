@@ -1,86 +1,187 @@
+####################################################################
 # Digital Logic
 # www.d-logic.net
 #
-# Helper Makefile
-#
+# s
+####################################################################
 $(VERBOSE).SILENT:
+####################################################################
 
-all : help
+OUTNAME = uFReader-open
 
-help info : 
-	echo "----------------------------------------------"
-	echo "Making example to test Reader opening function"
-	echo "----------------------------------------------"
-	echo "For Linux x86 type:               'make lin32'"
-	echo "For Linux x86_64 type:            'make lin64'"
-	echo "For Linux ARM (Soft Point) type   'make armel'"
-	echo "For Linux ARM (Hard Point) type:  'make armhf'"
-	echo "For Linux ARM (aarch64) type:     'make aarch64'"
-	echo "For Windows x86 type:             'make win32'"
-	echo "For Windows x86_64 type:          'make win64'"
-	echo "For macOS x86_64 type:            'make macos'"
-	echo "----------------------------------------------"
+LIBNAME = uFCoder
+LIBDIR = lib
 
-armhf :
-	gcc -o ufr-reader_open main.c -Llib/linux/arm-hf/ -luFCoder-armhf -Wl,-Rlib/linux/arm-hf/
-	echo "Making done, without errors."
-	echo "To run the example, type:"
-	echo "   './ufr-reader_open'"
+SRC = src/*.c
 
-armel :
-	gcc -o ufr-reader_open main.c -Llib/linux/arm/ -luFCoder-arm -Wl,-Rlib/linux/arm/
-	echo "Making done, without errors."
-	echo "To run the example, type:"
-	echo "   './ufr-reader_open'"
+####################################################################
+####################################################################
 
-aarch64 :
-	gcc -o ufr-reader_open main.c -Llib/linux/aarch64/ -luFCoder-aarch64 -Wl,-Rlib/linux/aarch64/
-	echo "Making done, without errors."
-	echo "To run the example, type:"
-	echo "   './ufr-reader_open'"
+all : info_ver help
 
-lin32 :
-	gcc -m32 -o ufr-reader_open-x86 main.c -Llib/linux/x86/ -luFCoder-x86 -Wl,-Rlib/linux/x86/
-	echo "Making done, without errors."
-	echo "To run the example, type:"
-	echo "   './ufr-reader_open-x86'"
-
-lin64 :
-	gcc -o ufr-reader_open-x86_64 main.c -Llib/linux/x86_64/ -luFCoder-x86_64 -Wl,-Rlib/linux/x86_64/
-	echo "Making done, without errors."
-	echo "To run the example, type:"
-	echo "   './ufr-reader_open-x86_64'"
-
-macos osx :
-	gcc -o ufr-reader_open main.c -Llib/osx/x86_64/ -luFCoder -Xlinker -rpath lib/osx/x86_64/
-	echo "Making done, without errors."
-	echo "To run the example, type:"
-	echo "   './ufr-reader_open'"
-
-win32 :
-	echo "If You see error like: 'skipping incompatible lib/windows/x86/uFCoder-x86.dll when searching for...'"
-	echo "  This means You have the gcc compiler for 64 bit"
-	echo "  type 'make win64' instead of 'make win32'"
+info_ver :
+	echo "---------------------------------------------------------"
+	echo "  Making example to test the uFReader opening"
 	echo ""
-	gcc -o ufr-reader_open-x86 main.c -Llib/windows/x86/ -luFCoder-x86 -Wl,-Rlib/windows/x86/ -Wl,--enable-stdcall-fixup
-	echo "Making done, without errors."
-	echo "You must use library from the 'lib\windows\x86\'"
-	echo ""
-	echo "To run the example (one way) type:"
-	echo "   'cd lib\windows\x86'"
-	echo "   '..\..\..\ufr-reader_open-x86'"
-	echo "   'cd ..\..\..\'"
+	echo "  Project output name: $(OUTNAME)"
+	echo "---------------------------------------------------------"
+
+####################################################################
+
+help : 
+	echo "--------------+------------------------------------"
+	echo "   Execute    | for building executables on Operating System / platform"
+	echo "--------------+------------------------------------"
+	echo " make win64   | Windows x86_64"
+	echo " make win32   | Windows x86"
+	echo " make macos   | macOS x86_64"
+	echo " make lin64   | Linux x86_64"
+	echo " make lin32   | Linux x86"
+	echo " make armhf   | Linux ARM - Hard Point"
+	echo " make armel   | Linux ARM - Soft Point"
+	echo " make aarch64 | Linux ARM - aarch64"
+	echo "---------------------------------------------------"
+
+####################################################################
+####################################################################
+
+INCLUDES = -I$(LIBDIR)/include
+
+CFLAGS = $(INCLUDES) # -static-libgcc # -static-libstdc++
+
+CC = gcc
+
+#-------------------------------------------------------------------
+#-------------------------------------------------------------------
 
 win64 :
-	echo "If You see error like: 'lib/windows/x86_64/uFCoder-x86_64.dll: file not recognized: File format not recognized'"
-	echo "  This means You have the gcc compiler for 32 bit"
+	-mkdir windows-x86_64-release
+	# help on error
+	echo "If You see error like: '$(LIBDIR)/windows/x86_64/$(LIBNAME)-x86_64.dll: file not recognized: File format not recognized'"
+	echo "  This means You have the GCC compiler for 32 bit"
 	echo "  type 'make win32' instead of 'make win64'"
 	echo ""
-	gcc -o ufr-reader_open-x86_64 main.c -Llib/windows/x86_64/ -luFCoder-x86_64 -Wl,-Rlib/windows/x86_64/
-	echo "Making done, without errors."
-	echo "You must use library from the 'lib\windows\x86_64\'"
+	# compile
+	$(CC) -o windows-x86_64-release/$(OUTNAME) $(CFLAGS) $(SRC) -L$(LIBDIR)/windows/x86_64/ -l$(LIBNAME)-x86_64
+	# done
+	echo "Making on 64-bit Windows is done - without errors."
+	echo "Output is in windows-x86_64-release/"
+	echo
+	# running help message
+	echo "You must use library from the '$(LIBDIR)\windows\x86_64\'"
 	echo ""
-	echo "To run the example (one way) type:"
-	echo "   'cd lib\windows\x86_64'"
-	echo "   '..\..\..\ufr-reader_open-x86_64'"
-	echo "   'cd ..\..\..\'"
+	echo "To run the example - type:"
+	echo "   'cd windows-x86_64-release'"
+	echo "   'run_me'"
+
+#-------------------------------------------------------------------
+
+win32 :
+	-mkdir windows-x86-release
+	# help on error
+	echo "If You see error like: 'skipping incompatible $(LIBDIR)/windows/x86/$(LIBNAME)-x86.dll when searching for...'"
+	echo "  This means You have the GCC compiler for 64 bit"
+	echo "  type 'make win64' instead of 'make win32'"
+	echo ""
+	# compile
+	$(CC) -o windows-x86-release/$(OUTNAME) $(CFLAGS) $(SRC) -L$(LIBDIR)/windows/x86/ -l$(LIBNAME)-x86 -Wl,--enable-stdcall-fixup
+	# done
+	echo "Making on 32-bit Windows is done - without errors."
+	echo "Output is in windows-x86-release/"
+	echo
+	# running help message
+	echo "You must use library from the '$(LIBDIR)\windows\x86\'"
+	echo ""
+	echo "To run the example - type:"
+	echo "   'cd windows-x86-release'"
+	echo "   'run_me'"
+
+#-------------------------------------------------------------------
+#-------------------------------------------------------------------
+
+macos osx :
+	-mkdir -p macos-x86_64-release
+	$(CC) -o macos-x86_64-release/$(OUTNAME) $(CFLAGS) $(SRC) -L$(LIBDIR)/macos/x86_64 -l$(LIBNAME)-x86_64 -Xlinker -rpath $(LIBDIR)/macos/x86_64/
+	echo "Making on 64-bit Intel macOS is done - without errors."
+	echo "Output is in macos-x86_64-release/"
+	echo
+	# running help message
+	echo "You must use library from the '$(LIBDIR)/macos/x86_64'"
+	echo ""
+	echo "To run the example - type:"
+	echo "   'cd macos-x86_64-release && ./$(OUTNAME)'"
+
+#-------------------------------------------------------------------
+#-------------------------------------------------------------------
+
+lin64 :
+	-mkdir -p linux-x86_64-release
+	$(CC) -m64 -o linux-x86_64-release/$(OUTNAME) $(CFLAGS) $(SRC) -L$(LIBDIR)/linux/x86_64/ -l$(LIBNAME)-x86_64 -Wl,-R../$(LIBDIR)/linux/x86_64/
+	echo "Making on 64-bit x86 Linux is done - without errors."
+	echo "Output is in linux-x86_64-release/"
+	echo
+	# running help message
+	echo "You must use library from the '$(LIBDIR)/linux/x86_64'"
+	echo ""
+	echo "To run the example - type:"
+	echo "   'cd linux-x86_64-release && ./$(OUTNAME)'"
+
+#-------------------------------------------------------------------
+
+lin32 :
+	-mkdir -p linux-x86-release
+	$(CC) -m32 -o linux-x86-release/$(OUTNAME) $(CFLAGS) $(SRC) -L$(LIBDIR)/linux/x86/ -l$(LIBNAME)-x86 -Wl,-R../$(LIBDIR)/linux/x86/
+	echo "Making on 32-bit x86 Linux is done - without errors."
+	echo "Output is in linux-x86-release/"
+	echo
+	# running help message
+	echo "You must use library from the '$(LIBDIR)/linux/x86'"
+	echo ""
+	echo "To run the example - type:"
+	echo "   'cd linux-x86-release && ./$(OUTNAME)'"
+
+#-------------------------------------------------------------------
+
+armhf :
+	-mkdir -p linux-arm-hf-release
+	$(CC) -o linux-arm-hf-release/$(OUTNAME) $(CFLAGS) $(SRC) -L$(LIBDIR)/linux/arm-hf/ -l$(LIBNAME)-armhf -Wl,-R../$(LIBDIR)/linux/arm-hf/
+	echo "Making on ARM-HF Linux is done - without errors."
+	echo "Output is in linux-arm-hf-release/"
+	echo
+	# running help message
+	echo "You must use library from the '$(LIBDIR)/linux/arm-hf'"
+	echo ""
+	echo "To run the example - type:"
+	echo "   'cd linux-arm-hf-release && ./$(OUTNAME)'"
+
+#-------------------------------------------------------------------
+
+armel :
+	-mkdir -p linux-arm-el-release
+	$(CC) -o linux-arm-el-release/$(OUTNAME) $(CFLAGS) $(SRC) -L$(LIBDIR)/linux/arm-el/ -l$(LIBNAME)-armel -Wl,-R../$(LIBDIR)/linux/arm-el/
+	echo "Making on ARM-EL Linux is done - without errors."
+	echo "Output is in linux-arm-el-release/"
+	echo
+	# running help message
+	echo "You must use library from the '$(LIBDIR)/linux/arm-el'"
+	echo ""
+	echo "To run the example - type:"
+	echo "   'cd linux-arm-el-release && ./$(OUTNAME)'"
+
+#-------------------------------------------------------------------
+
+aarch64 :
+	-mkdir -p linux-aarch64-release
+	$(CC) -o linux-aarch64-release/$(OUTNAME) $(CFLAGS) $(SRC) -L$(LIBDIR)/linux/aarch64/ -l$(LIBNAME)-aarch64 -Wl,-R../$(LIBDIR)/linux/aarch64/
+	echo "Making on AARCH64 Linux is done - without errors."
+	echo "Output is in linux-aarch64-release/"
+	echo
+	# running help message
+	echo "You must use library from the '$(LIBDIR)/linux/aarch64'"
+	echo ""
+	echo "To run the example - type:"
+	echo "   'cd linux-aarch64-release && ./$(OUTNAME)'"
+
+#-------------------------------------------------------------------
+
+####################################################################
