@@ -180,7 +180,7 @@ void test_ESP32_trans(void)
 
 #define TEST_APP_VER	"2.0"
 
-static const char choice_str[] = "Test opening Digital Logic reader:\n"
+static const char choice_str[] = "Test opening Digital Logic uFReader:\n"
 		"1) uFR nano 1 Mbps with FTDI I/F\n"
 		"2) uFR nano RS232 115200 bps with serial I/F (auto port)\n"
 		"3) uFR nano RS232 115200 bps with serial I/F (/dev/serial0)\n"
@@ -197,7 +197,7 @@ int main(void)
 	UFR_STATUS status;
 	int choice = -1;
 
-	printf("\nTest ReaderOpen version %s\n", TEST_APP_VER);
+	printf("\nTest ReaderOpenEx() version %s\n", TEST_APP_VER);
 	//--------------------------------------------------------------
 	printf("* uFCoder library version: %s\n\n", GetDllVersionStr());
 	//--------------------------------------------------------------
@@ -238,18 +238,25 @@ int main(void)
 		test_ESP32_inet('T');
 		break;
 
+	case -1:
+		break; // exit
+
 	default:
 		test_port_open_arg();
 		break;
 	}
 
 	/* exit */
-	status = ReaderClose();
-	printf("ReaderClose():> %s\n", UFR_Status2String(status));
+	if (choice >= 0)
+	{
+		status = ReaderClose();
+		printf("ReaderClose():> %s\n", UFR_Status2String(status));
+	}
 
 	puts("Tester finish.");
 	fflush(stdout);
 
+	puts("(Wait for 2 seconds, then quit...)");
 	sleep(2);
 
 	return EXIT_SUCCESS;
