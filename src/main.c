@@ -32,7 +32,8 @@ UFR_STATUS reader_open_ex(uint32_t reader_type, c_string port_name,
 
 	opening_time = GetTickCount() - opening_time;
 
-	printf("ReaderOpenEx(%d, '%s', %d, \"%s\"):> %s || Time = %lu ms\n",
+	printf("ReaderOpenEx(%d, '%s', %d, \"%s\"):> %s || "
+			"< Execution time = %lu ms >\n\n",
 			reader_type, port_name, port_interface, arg,
 			UFR_Status2String(status), opening_time);
 
@@ -173,26 +174,29 @@ static const char choice_str[] = "Test opening Digital Logic uFReader:\n"
 		"11) uFR nano ESP32 UDP\n"
 		"12) uFR nano ESP32 TCP/IP\n"
 		"0) custom parameters in ReaderOpenEx()\n"
-		"\n";
+		"---------------------------------------------\n";
 
 int main(void)
 {
 	UFR_STATUS status;
 	int choice = -1;
 
-	printf("\nTest ReaderOpenEx() version %s\n", TEST_APP_VER);
+	puts("---------------------------------------------");
+	puts("https://www.d-logic.net/nfc-rfid-reader-sdk/");
+	puts("---------------------------------------------");
+	printf("ReaderOpenEx() API tester application version %s\n", TEST_APP_VER);
 	//--------------------------------------------------------------
-	printf("* uFCoder library version: %s\n\n", GetDllVersionStr());
+	printf(" >>> uFCoder library version: %s <<<\n\n", GetDllVersionStr());
 	//--------------------------------------------------------------
 	puts(choice_str);
 
-	printf("Enter number: ");
+	printf("Enter choice number: ");
 	fflush(stdout);
 	//--------------------------------------------------------------
 	scanf("%d", &choice);
-
-//	printf("%d - %c\n", choice, choice);
-//	fflush(stdout);
+	puts("========================");
+//	printf("\nChoice is: %d 0x%02X == '%c'\n\n\n", choice, choice, choice);
+	fflush(stdout);
 
 	switch (choice)
 	{
