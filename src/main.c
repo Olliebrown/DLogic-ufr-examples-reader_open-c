@@ -120,23 +120,6 @@ UFR_STATUS test_port_open_arg(void)
 	return status;
 }
 
-void test_list_readers(void)
-{
-	UFR_STATUS status;
-	int num;
-
-	status = ReaderList_UpdateAndGetCount(&num);
-
-	printf("ReaderList_UpdateAndGetCount() = %s :: ",
-			UFR_Status2String(status));
-	if (status)
-		return;
-
-	printf("DEVICES= %d\n", num);
-
-	fflush(stdout);
-}
-
 void test_ESP32_inet(int type)
 {
 	char ip_addr[64] = "192.168.1.68";
@@ -185,7 +168,7 @@ static const char choice_str[] = "Test opening Digital Logic uFReader:\n"
 		"2) uFR nano RS232 115200 bps with serial I/F (auto port)\n"
 		"3) uFR nano RS232 115200 bps with serial I/F (/dev/serial0)\n"
 		"4) uFR RS232 115200 bps on RPi shield\n"
-		"9) Multi-readers list\n"
+//		"9) Multi-readers list\n"
 		"10) uFR nano ESP32 UART - transparent mode\n"
 		"11) uFR nano ESP32 UDP\n"
 		"12) uFR nano ESP32 TCP/IP\n"
@@ -224,9 +207,6 @@ int main(void)
 		break;
 	case 4:
 		reader_open_ex(2, "/dev/serial0", 10, 0);
-		break;
-	case 9:
-		test_list_readers();
 		break;
 	case 10:
 		test_ESP32_trans();
